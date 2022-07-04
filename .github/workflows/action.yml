@@ -89,10 +89,6 @@ jobs:
           host: ${{ secrets.PUBLIC_EC2_IP }}
           username: ubuntu
           key: ${{ secrets.PUBLIC_EC2_SSH_KEY }}
-          envs: 
-            CURRENT_PORT
-            IDLE_PORT
-            CONTAINER_ID
           script: |
             CURRENT_PORT=$(curl -s http://localhost/port)
             echo "@@@@@@@@@@@@@@@@@@@@@"

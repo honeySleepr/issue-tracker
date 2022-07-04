@@ -114,12 +114,12 @@ jobs:
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/issue_tracker:latest
             CONTAINER_ID=$(sudo docker run -d -p "$IDLE_PORT":"$IDLE_PORT" -e PORT="$IDLE_PORT" -e PROFILE=prod ${{ secrets.DOCKERHUB_USERNAME }}/issue_tracker:latest)
             
-            timer=2
-            while [[ $(sudo docker logs $CONTAINER_ID | grep "Started IssueTrackerApplication") == "" && timer -gt 0 ]];
+            TIMER=10
+            while [[ $(sudo docker logs $CONTAINER_ID | grep "Started IssueTrackerApplication") == "" && TIMER -gt 0 ]];
             do
               sleep 5
               echo "Waiting for Spring Boot.."
-              let "timer--"
+              let "TIMER--"
             done
             
             echo "set \$service_url http://127.0.0.1:$IDLE_PORT;" | sudo tee /etc/nginx/conf.d/service-url.inc

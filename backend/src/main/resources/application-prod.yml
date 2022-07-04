@@ -13,7 +13,7 @@ spring:
       mode: always
 
   redis:
-    host: ${PUBLIC_IP}
+    host: ${PUBLIC_EC2_PRIVATE_IP}
     port: 6379
 
   jpa:

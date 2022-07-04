@@ -81,9 +81,8 @@ jobs:
     needs: job2
     name: 3. Deploy to AWS EC2
     runs-on: ubuntu-latest
-
+    # 무중단 배포 적용
     steps:
-
       - name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
         with:
@@ -94,9 +93,7 @@ jobs:
             CURRENT_PORT
             IDLE_PORT
             CONTAINER_ID
-              
           script: |
-            
             CURRENT_PORT=$(curl -s http://localhost/port)
             echo "@@@@@@@@@@@@@@@@@@@@@"
             echo "CURRENT_PORT : $CURRENT_PORT"
@@ -121,10 +118,12 @@ jobs:
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/issue_tracker:latest
             CONTAINER_ID=$(sudo docker run -d -p "$IDLE_PORT":"$IDLE_PORT" -e PORT="$IDLE_PORT" -e PROFILE=prod ${{ secrets.DOCKERHUB_USERNAME }}/issue_tracker:latest)
             
-            while [[ $(sudo docker logs $CONTAINER_ID | grep "Started IssueTrackerApplication") == "" ]];
+            timer=10
+            while [[ $(sudo docker logs $CONTAINER_ID | grep "Started IssueTrackerApplication") == "" && timer -gt 0 ]];
             do
               sleep 5
               echo "Waiting for Spring Boot.."
+              let "timer--"
             done
             
             echo "set \$service_url http://127.0.0.1:$IDLE_PORT;" | sudo tee /etc/nginx/conf.d/service-url.inc

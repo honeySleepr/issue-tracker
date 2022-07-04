@@ -118,7 +118,7 @@ jobs:
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/issue_tracker:latest
             CONTAINER_ID=$(sudo docker run -d -p "$IDLE_PORT":"$IDLE_PORT" -e PORT="$IDLE_PORT" -e PROFILE=prod ${{ secrets.DOCKERHUB_USERNAME }}/issue_tracker:latest)
             
-            timer=10
+            timer=2
             while [[ $(sudo docker logs $CONTAINER_ID | grep "Started IssueTrackerApplication") == "" && timer -gt 0 ]];
             do
               sleep 5
